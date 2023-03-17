@@ -1,3 +1,48 @@
+// tsc -w start tsc in console
+interface Project {
+  id?: string;
+  title: string;
+  description: string;
+  people: number;
+}
+// project state managment
+
+class ProjectState {
+  private listeners: any[] = [];
+  private projects: any[] = [];
+  private static instance: ProjectState;
+
+  private constructor(){}
+
+  static getInstance() {
+    if(this.instance) {
+      return this.instance;
+    }
+    this.instance = new ProjectState();
+    return this.instance;
+  }
+
+  addListener(listenerFn: Function) {
+    this.listeners.push(listenerFn)
+  }
+
+  addProjest(title: string, description: string, numOfPeople: number): void {
+    const newProject: Project = {
+      id: Math.random().toString(),
+      title,
+      description,
+      people: numOfPeople
+    };
+
+    this.projects.push(newProject);
+    for(const listenerFn of this.listeners) {
+      listenerFn(this.projects.slice())
+    }
+  }
+}
+
+const projectState = ProjectState.getInstance();
+
 // validation logic
 interface Validateble {
   value: string | number;
@@ -7,7 +52,6 @@ interface Validateble {
   min?: number;
   max?: number;
 }
-
 function validate(validatebleInput: Validateble): boolean {
   let isValid = true;
   if (validatebleInput.required) {
@@ -56,18 +100,72 @@ function Autobind(_: any, _2: string, descriptor: PropertyDescriptor) {
   };
   return adjustDescriptor;
 }
+
+interface ListItem {
+  title: string;
+  desciption: string;
+  people: number;
+}
+
+// class ProjetList
+class ProjetList {
+  templeElement: HTMLTemplateElement;
+  hostElement: HTMLDivElement;
+  element: HTMLElement;
+  assignedProjects: any[];
+
+  constructor(private type: "active" | "finished") {
+    this.templeElement = document.getElementById(
+      "project-list"
+    ) as HTMLTemplateElement;
+
+    this.hostElement = <HTMLDivElement>document.getElementById("app")!;
+
+    const importedNode = document.importNode(this.templeElement.content, true);
+    this.element = importedNode.firstElementChild as HTMLElement;
+    this.element.id = `${this.type}-projects`;
+    this.assignedProjects = [];
+
+    projectState.addListener((projects: any[]) => {
+      this.assignedProjects = projects;
+      this.renderProjects();
+    });
+
+    this.attach();
+    this.renderContent();
+  }
+
+  private renderProjects() {
+    const listElement = document.getElementById(`${this.type}-project-list`)! as HTMLUListElement;
+    for(const projectItem of this.assignedProjects) {
+      const listItem = document.createElement('li');
+      listItem.textContent = projectItem.title;
+      listElement.appendChild(listItem);
+    }
+  }
+
+  private renderContent() {
+    const listId = `${this.type}-project-list`;
+    this.element.querySelector("ul")!.id = listId;
+    this.element.querySelector("h2")!.textContent =
+      this.type.toUpperCase() + " PROJECTS";
+
+  }
+
+  private attach(): void {
+    this.hostElement.insertAdjacentElement("afterbegin", this.element);
+  }
+}
+
 // ProjectInput class
 class ProjectInput {
   templeElement: HTMLTemplateElement;
   hostElement: HTMLDivElement;
   element: HTMLFormElement;
   titleInputElement: HTMLInputElement;
-  // @Required // decorator
   descriptionInputElement: HTMLInputElement;
-  // @Required
   peopleInputElement: HTMLInputElement;
-  // @Required
-  projetList: HTMLTemplateElement;
+  
 
   constructor() {
     this.templeElement = <HTMLTemplateElement>(
@@ -88,9 +186,6 @@ class ProjectInput {
       "#people"
     )! as HTMLInputElement;
 
-    this.projetList = document.getElementById(
-      "project-list"
-    ) as HTMLTemplateElement;
     this.configure();
     this.attach();
   }
@@ -142,6 +237,7 @@ class ProjectInput {
     if (Array.isArray(userInput)) {
       const [title, desc, people] = userInput;
       console.log(title, desc, people);
+      projectState.addProjest(title, desc, people);
       this.clearInputs();
     }
   }
@@ -156,3 +252,5 @@ class ProjectInput {
 }
 
 const projectInput = new ProjectInput();
+const activeProjectList = new ProjetList('active');
+const finishedProjectList = new ProjetList('finished');
