@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zbliżające się IPO na giełdzie USA — jak SpaceX</title>
+<style>
+  :root { --bg:#0b1020; --card:#121a30; --line:#243049; --fg:#e7ecf5; --muted:#9fb3d1; --accent:#7cc4ff; --green:#56d364; --amber:#e3b341; }
+  * { box-sizing: border-box; }
+  body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+         background: var(--bg); color: var(--fg); margin: 0; padding: 2rem 1rem; line-height: 1.5; }
+  .wrap { max-width: 980px; margin: 0 auto; }
+  h1 { color: var(--accent); margin-bottom: .25rem; }
+  h2 { color: var(--accent); margin-top: 2.5rem; border-bottom: 1px solid var(--line); padding-bottom: .4rem; }
+  .sub { color: var(--muted); margin-top: 0; }
+  .lead { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 1rem 1.2rem; margin: 1.2rem 0; }
+  table { border-collapse: collapse; width: 100%; margin-top: 1rem; }
+  th, td { padding: .65rem .8rem; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+  th { color: var(--muted); font-size: .78rem; text-transform: uppercase; letter-spacing: .03em; }
+  tr:hover td { background: #141c33; }
+  .tag { display:inline-block; padding:.12rem .5rem; border-radius:999px; font-size:.72rem; font-weight:600; }
+  .tag.confirmed { background: rgba(86,211,100,.15); color: var(--green); border:1px solid rgba(86,211,100,.4); }
+  .tag.expected  { background: rgba(227,179,65,.15); color: var(--amber); border:1px solid rgba(227,179,65,.4); }
+  .tag.done      { background: rgba(124,196,255,.15); color: var(--accent); border:1px solid rgba(124,196,255,.4); }
+  .ticker { font-weight: 700; color: var(--accent); }
+  .note { color: var(--muted); font-size: .85rem; }
+  .disclaimer { margin-top: 2.5rem; background: rgba(227,179,65,.08); border:1px solid rgba(227,179,65,.35);
+                border-radius: 12px; padding: 1rem 1.2rem; }
+  code { background:#1c2540; padding:.1rem .4rem; border-radius:6px; }
+  a { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>🚀 Zbliżające się IPO na giełdzie USA</h1>
+  <p class="sub">Firmy, które — tak jak SpaceX — wchodzą (lub niedługo wejdą) na NYSE / NASDAQ.
+     Obserwuj je <b>zanim</b> trafią na rynek, by ocenić, czy warto kupić je na Revolut.</p>
+
+  <div class="lead">
+    <b>Kontekst:</b> SpaceX (<span class="ticker">SPCX</span>) zadebiutował na NASDAQ
+    <b>12 czerwca 2026</b> po cenie $135 — to największe IPO w historii (~$75 mld).
+    Poniżej firmy, które dopiero <b>mają</b> zadebiutować w najbliższym czasie, oraz duże nazwiska
+    spodziewane w dalszej części 2026 roku.
+    <br><span class="note">Stan na: 19 czerwca 2026.</span>
+  </div>
+
+  <h2>📅 Potwierdzone — najbliższy miesiąc</h2>
+  <p class="note">Daty IPO ustala się zwykle dopiero 7–10 dni przed debiutem, więc lista jest krótka,
+     ale konkretna. Odśwież ją skryptem <code>ipo_tracker.py</code>.</p>
+  <table>
+    <thead><tr><th>Data</th><th>Spółka</th><th>Symbol</th><th>Giełda</th><th>Widełki ceny</th><th>Wielkość</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>25 cze 2026</td><td>DPC Holdings PLC</td>
+        <td class="ticker">DPC</td><td>NYSE</td><td>$28 – $32</td><td>~$700 mln</td>
+        <td><span class="tag confirmed">Potwierdzone</span></td>
+      </tr>
+      <tr>
+        <td>26 cze 2026</td><td>MetaOptics Ltd</td>
+        <td class="ticker">MOT</td><td>NASDAQ</td><td>$5 – $7</td><td>~$18 mln</td>
+        <td><span class="tag confirmed">Potwierdzone</span></td>
+      </tr>
+      <tr>
+        <td>12 cze 2026</td><td>Space Exploration Technologies (SpaceX)</td>
+        <td class="ticker">SPCX</td><td>NASDAQ</td><td>$135</td><td>~$75 mld</td>
+        <td><span class="tag done">Już na giełdzie</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>🔭 Duże nazwiska — spodziewane w 2026 (bez sztywnej daty)</h2>
+  <p class="note">To „lista intencji”, nie harmonogram — terminy się zmieniają.
+     Warto mieć je na radarze, bo po debiucie zwykle szybko trafiają do oferty Revolut.</p>
+  <table>
+    <thead><tr><th>Spółka</th><th>Branża</th><th>Oczekiwana giełda</th><th>Szacowana wycena</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td>OpenAI</td><td>Sztuczna inteligencja</td><td>NASDAQ (oczek.)</td><td>setki mld $</td>
+          <td><span class="tag expected">Koniec 2026 / 2027</span></td></tr>
+      <tr><td>Anthropic</td><td>Sztuczna inteligencja</td><td>NASDAQ (oczek.)</td><td>dziesiątki mld $</td>
+          <td><span class="tag expected">Spodziewane 2026</span></td></tr>
+      <tr><td>Discord</td><td>Komunikatory / social</td><td>NYSE / NASDAQ (oczek.)</td><td>~$15 mld</td>
+          <td><span class="tag expected">Złożony wniosek (poufny)</span></td></tr>
+      <tr><td>Canva</td><td>Design / SaaS</td><td>NASDAQ (oczek.)</td><td>dziesiątki mld $</td>
+          <td><span class="tag expected">Spodziewane 2026</span></td></tr>
+      <tr><td>Stripe</td><td>Fintech / płatności</td><td>NYSE / NASDAQ (oczek.)</td><td>~$70–90 mld</td>
+          <td><span class="tag expected">Od lat „w kolejce”</span></td></tr>
+      <tr><td>Revolut</td><td>Neobank / fintech</td><td>USA lub UK (oczek.)</td><td>~$45+ mld</td>
+          <td><span class="tag expected">Spodziewane 2026</span></td></tr>
+      <tr><td>Databricks</td><td>Dane / AI</td><td>NASDAQ (oczek.)</td><td>~$134 mld</td>
+          <td><span class="tag expected">Przesunięte na 2027</span></td></tr>
+    </tbody>
+  </table>
+
+  <h2>💡 Jak tego używać z Revolut</h2>
+  <ul class="note">
+    <li>Revolut daje dostęp do akcji z rynków USA, ale zwykle <b>dopiero po debiucie</b> — rzadko bierzesz
+        udział w samym IPO. Ta lista pomaga być gotowym <i>zanim</i> akcje się pojawią.</li>
+    <li>Świeże, codziennie aktualne dane wygenerujesz skryptem:
+        <code>python ipo_tracker.py --html index.html</code> (wymaga darmowego klucza Finnhub).</li>
+    <li>Zawsze sprawdzaj, czy dany walor jest dostępny w Twojej wersji aplikacji Revolut — oferta różni się
+        zależnie od kraju i planu.</li>
+  </ul>
+
+  <div class="disclaimer">
+    ⚠️ <b>To nie jest porada inwestycyjna.</b> Dane mają charakter informacyjny i orientacyjny.
+    Daty oraz widełki cenowe IPO bardzo często się zmieniają lub są odwoływane.
+    Inwestowanie w akcje (zwłaszcza świeżych debiutów) wiąże się z wysokim ryzykiem straty kapitału.
+    Przed decyzją potwierdź dane w oficjalnym kalendarzu giełdy (NYSE / NASDAQ) i rozważ konsultację z doradcą.
+  </div>
+
+</div>
+</body>
+</html>
