@@ -7,16 +7,14 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 
 /**
- * Cyklicznie (co N minut) budzi ekran, robi zdjęcie growkitu i zapisuje plik.
- * Uruchamiane przez WorkManager (patrz [CaptureScheduler]).
+ * Cyklicznie (co N minut) budzi ekran, robi zdjęcie growkitu i **wysyła je po
+ * Bluetooth** do zapamiętanego komputera (Prefs). Uruchamiane przez WorkManager.
  *
  * WorkManager wybrany zamiast AlarmManager bo:
  *  - przeżywa restart telefonu,
- *  - sam zarządza wakelockiem na czas pracy,
- *  - nie wymaga utrzymywania foreground service całą dobę.
+ *  - sam zarządza wakelockiem na czas pracy.
  *
- * Minimalny interwał WorkManager to 15 min. Dla gęstszego timelapse użyj
- * trybu „one-shot łańcuchowy" z [CaptureScheduler.scheduleOneShot].
+ * Minimalny interwał WorkManager to 15 min — dla powolnego wzrostu grzybni aż nadto.
  */
 class CaptureWorker(
     appContext: Context,
@@ -30,28 +28,34 @@ class CaptureWorker(
     }
 
     override suspend fun doWork(): Result {
-        // Wybudź ekran na chwilę — autofokus/ekspozycja działają stabilniej,
-        // a Ty widzisz, że telefon „żyje".
         val pm = applicationContext.getSystemService(Context.POWER_SERVICE) as PowerManager
         @Suppress("DEPRECATION")
         val wake = pm.newWakeLock(
             PowerManager.SCREEN_BRIGHT_WAKE_LOCK or PowerManager.ACQUIRE_CAUSES_WAKEUP,
             "MushroomMonitor:capture"
         )
-        wake.acquire(30_000L)
+        wake.acquire(60_000L)
         return try {
             val flash = when (inputData.getString(KEY_FLASH)) {
                 "OFF" -> CameraController.FlashMode.OFF
                 "TORCH" -> CameraController.FlashMode.TORCH
                 else -> CameraController.FlashMode.ON
             }
-            val maxRes = inputData.getBoolean(KEY_MAX_RES, true)
+            val maxRes = inputData.getBoolean(KEY_MAX_RES, false)
             val file = CaptureStorage.newPhotoFile(applicationContext, System.currentTimeMillis())
             val result = CameraController(applicationContext).capture(file, flash, maxRes)
-            Log.i(TAG, "OK: ${result.file.name} ${result.width}x${result.height}")
+            Log.i(TAG, "Zdjęcie OK: ${result.file.name} ${result.width}x${result.height}")
+
+            val addr = Prefs.targetAddress(applicationContext)
+            if (addr == null) {
+                Log.w(TAG, "Brak zapamiętanego komputera — zdjęcie zapisane, ale nie wysłane.")
+                return Result.success()
+            }
+            BluetoothSender(applicationContext).send(addr, result.file)
+            Log.i(TAG, "Wysłano ${result.file.name} po Bluetooth.")
             Result.success()
         } catch (e: Exception) {
-            Log.e(TAG, "Zdjęcie nie powiodło się", e)
+            Log.e(TAG, "Zdjęcie/wysłka nie powiodły się", e)
             Result.retry()
         } finally {
             if (wake.isHeld) wake.release()

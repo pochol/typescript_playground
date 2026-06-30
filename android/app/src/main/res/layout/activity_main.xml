@@ -20,8 +20,27 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Lampa:"
+            android:text="Komputer (sparowany przez Bluetooth):"
             android:textStyle="bold" />
+
+        <Spinner
+            android:id="@+id/devices"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp" />
+
+        <Button
+            android:id="@+id/btnRefresh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="🔄 Odśwież listę" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Lampa:"
+            android:textStyle="bold"
+            android:paddingTop="12dp" />
 
         <RadioGroup
             android:id="@+id/flashGroup"
@@ -53,8 +72,7 @@
             android:id="@+id/maxRes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:checked="true"
-            android:text="Pełna rozdzielczość (108 MP)" />
+            android:text="Pełna rozdzielczość 108 MP (wolniejsza wysłka BT; bez = 12 MP)" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -82,7 +100,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="📸 Zrób zdjęcie teraz" />
+            android:text="📸 Zrób zdjęcie i wyślij" />
 
         <Button
             android:id="@+id/btnStart"
