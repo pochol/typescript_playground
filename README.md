@@ -1,59 +1,61 @@
 # 🍄 Mushroom Growth Monitor
 
-System do monitorowania wzrostu grzybni (growkity) z telefonu **Xiaomi Mi 11**
-bez dostępu do internetu/WiFi, z dashboardem do obserwacji i analizą zdjęć AI.
+Monitorowanie wzrostu grzybni (growkity) z telefonu **Xiaomi Mi 11**, **w pełni
+lokalnie** — zdjęcia lecą z telefonu do komputera **przez Bluetooth**, bez
+internetu i bez chmury. Na komputerze powstaje lokalny raport HTML z galerią
+i analizą zdjęć.
+
+> 🔒 Zasady projektu spisane w [`REQUIREMENTS.md`](REQUIREMENTS.md):
+> **tylko Bluetooth**, **wszystko lokalnie**, dane nigdy nie idą do gita.
 
 ## Problem
 
-Telefon ma zepsutą płytę główną — WiFi nie działa, internetu brak, SIM nie
-przekładamy. Trzeba więc robić zdjęcia growkitu (grzybnia + widoczny odczyt
-wilgotności i temperatury w boxie) i przesyłać je do komputera **bez sieci**.
+Telefon ma zepsutą płytę główną — WiFi/internet nie działa, SIM nie przekładamy.
+Transfer zdjęć do komputera idzie **wyłącznie przez Bluetooth**.
 
 ## Architektura
 
 ```
-Telefon Mi 11 (bez internetu)        Komputer (z internetem)            Ty
-┌──────────────────────────┐  USB/ADB  ┌────────────────────┐  Firebase  ┌────────────┐
-│ android/  (APK, Kotlin)  │ ───────►  │ relay/ (Python)    │ ────────►  │ dashboard/ │
-│ • budzi ekran            │   pull    │ • adb pull         │   upload   │ (React+TS) │
-│ • aparat 108 MP          │           │ • analiza Claude   │            │ • galeria  │
-│ • steruje lampą          │           │ • OCR temp/wilg.   │            │ • timeline │
-│ • spust + zapis          │           │ • upload Firebase  │            │ • wykresy  │
-│ • powtórka co N minut    │           └────────────────────┘            │ • alerty   │
-└──────────────────────────┘                                             └────────────┘
+Telefon Mi 11 (bez internetu)      Bluetooth        Komputer (lokalnie)
+┌──────────────────────────┐    (RFCOMM/SPP)   ┌────────────────────────┐
+│ android/  (APK, Kotlin)  │ ════════════════► │ relay/bt_receiver.py   │
+│ • aparat 108 MP          │                   │ • odbiera plik         │
+│ • lampa (błysk/latarka)  │                   │ • analiza (opcj. Claude)│
+│ • wysyła zdjęcie po BT   │                   │ • zapis do ./photos/   │
+│ • cyklicznie co N minut  │                   │ • report.py → HTML     │
+└──────────────────────────┘                   └────────────────────────┘
+                                                          │
+                                                          ▼
+                                            photos/report.html (dwuklik)
 ```
-
-**Dlaczego tak?** Telefon nie ma internetu, więc nie wrzuci nic do chmury sam.
-Komputer (który ma sieć) działa jako **most**: przez kabel USB + ADB ściąga
-nowe zdjęcia, analizuje je modelem wizyjnym Claude, i publikuje na Firebase.
-Dashboard React czyta z Firebase — oglądasz wzrost z dowolnego urządzenia.
 
 ## Komponenty
 
-| Katalog      | Co to                                   | Stack                             |
-|--------------|-----------------------------------------|-----------------------------------|
-| `android/`   | Aplikacja APK na Mi 11                  | Kotlin, Camera2, WorkManager      |
-| `relay/`     | Most na komputerze (pull → AI → upload) | Python 3, adb, Anthropic SDK      |
-| `dashboard/` | Panel obserwacji + analiza              | React, TypeScript, Vite, Firebase |
+| Katalog      | Co to                                  | Stack                         |
+|--------------|----------------------------------------|-------------------------------|
+| `android/`   | Aplikacja APK na Mi 11                 | Kotlin, Camera2, Bluetooth RFCOMM, WorkManager |
+| `relay/`     | Odbiornik BT + analiza + raport lokalny| Python 3, PyBluez, Anthropic SDK (opcj.) |
+| `dashboard/` | (opcjonalny) wariant React            | React, TypeScript, Vite       |
+
+> Do działania **wystarczą** `android/` + `relay/`. Folder `dashboard/` to
+> opcjonalna, ładniejsza alternatywa dla `report.html` — niewymagana.
 
 ## Szybki start
 
-1. **APK** — zbuduj i wgraj na telefon: [`android/README.md`](android/README.md)
-2. **Most** — uruchom na komputerze z podłączonym telefonem: [`relay/README.md`](relay/README.md)
-3. **Dashboard** — uruchom panel: [`dashboard/README.md`](dashboard/README.md)
+1. **Sparuj** telefon z komputerem w ustawieniach Bluetooth (raz).
+2. **APK** — zbuduj i wgraj na telefon: [`android/README.md`](android/README.md)
+3. **Odbiornik** — uruchom na komputerze: [`relay/README.md`](relay/README.md)
+4. W aplikacji wybierz komputer z listy sparowanych, ustaw lampę i interwał,
+   wciśnij **Start**. Zdjęcia będą lecieć po Bluetooth, a na komputerze
+   pojawi się `photos/report.html`.
 
 ## Co obserwujemy (eksperyment)
 
-Cel: nauczyć się po ~30 zdjęciach, **kiedy grzybnia zaczyna wychodzić na
-zewnątrz** (pinning → owocniki). Zmienne mierzone ze zdjęcia:
+Cel: po ~30 zdjęciach rozpoznać, **kiedy grzybnia wychodzi na zewnątrz**
+(pinning → owocniki). Zmienne ze zdjęcia: % kolonizacji, wykrycie pierwszych
+zawiązków, morfologia (długie nóżki vs duże kapelusze), kondensacja, oraz odczyt
+temperatury i wilgotności z wyświetlacza w boxie.
 
-- **% pokrycia grzybnią** (ile białego) — postęp kolonizacji
-- **wykrycie pierwszych zawiązków/pinów** — start owocowania
-- **morfologia** — długie „nóżki" (trzony) vs. duże kapelusze (sygnał warunków)
-- **kondensacja / krople** na ściankach — nadmiar wilgoci
-- **odczyt temperatury i wilgotności** z wyświetlacza w boxie (OCR + AI)
-
-> ⚠️ **Uwaga sprzętowa:** Mi 11 ma aparat **108 MP** (nie 120 MP — taki tryb
-> nie istnieje na tym sprzęcie). Aplikacja używa pełnej rozdzielczości sensora;
-> w razie blokady Xiaomi można przełączyć na 12 MP (pixel-binning, mniejszy plik,
-> często lepszy do analizy). Patrz `android/README.md`.
+> ⚠️ Mi 11 ma aparat **108 MP** (nie 120 MP — taki tryb nie istnieje). Przez
+> Bluetooth pliki 108 MP (~30 MB) idą **wolno**; do timelapse poleca się tryb
+> **12 MP** (~3 MB) — szybszy transfer, w zupełności wystarcza do analizy.

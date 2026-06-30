@@ -1,3 +1,7 @@
+# PyBluez — klasyczny Bluetooth (RFCOMM). Na Linux wymaga libbluetooth-dev:
+#   sudo apt install libbluetooth-dev
+# Windows: działa z natywnym stosem; macOS bywa problematyczny (patrz README).
+PyBluez>=0.30
+# Analiza AI (opcjonalna — można pominąć przy DISABLE_AI=1):
 anthropic>=0.40.0
-firebase-admin>=6.5.0
 python-dotenv>=1.0.0

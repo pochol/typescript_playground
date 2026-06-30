@@ -1,58 +1,27 @@
-# 📊 Dashboard — Mushroom Growth Monitor
+# 📊 Dashboard (opcjonalny) — wariant React
 
-Panel React + TypeScript (Vite) do obserwacji wzrostu grzybni. Czyta zdjęcia
-i analizy z Firebase (publikowane przez `relay/`) i pokazuje na żywo:
+> **Nie jest potrzebny do działania projektu.** Domyślny, lokalny dashboard to
+> `photos/report.html` generowany przez `relay/report.py` — otwierasz go
+> dwuklikiem, bez instalacji i bez internetu.
+>
+> Ten folder to ładniejsza, opcjonalna alternatywa (React + TypeScript) dla osob,
+> które wolą pełny interfejs. Czyta te same dane (`Photo` + `Analysis` z
+> [`src/types.ts`](src/types.ts)).
 
-- 📈 wykres **postępu kolonizacji** (%) w czasie
-- 🌡️💧 wykres **temperatury i wilgotności** odczytanych z wyświetlacza w boxie
-- 🌱 **alert pinningu** — kiedy pojawiły się pierwsze zawiązki (start owocowania)
-- 🖼️ **galerię** wszystkich zdjęć z analizą AI (etap, morfologia, kondensacja,
-  problemy, zalecenia)
-
-## Uruchomienie
+## Uruchomienie (tryb DEMO)
 
 ```bash
 cd dashboard
 npm install
-npm run dev          # http://localhost:5173
+npm run dev          # http://localhost:5173 — pokazuje dane przykładowe
 ```
 
-Bez konfiguracji Firebase dashboard startuje w **trybie DEMO** (dane przykładowe),
-żebyś od razu zobaczył jak wygląda.
+Bez konfiguracji startuje w **trybie DEMO** (dane przykładowe), żeby pokazać
+jak wygląda układ.
 
-## Podłączenie do Firebase
+## Podpięcie pod dane lokalne
 
-1. Firebase console → Project settings → General → Your apps → **Web app**
-2. Skopiuj `firebaseConfig`
-3. `cp .env.example .env.local` i uzupełnij wartości `VITE_FIREBASE_*`
-4. `npm run dev` — dashboard przełączy się na dane na żywo
-
-### Reguły dostępu (do odczytu publicznego)
-
-W Firestore (`Rules`) na czas eksperymentu możesz dać odczyt publiczny:
-
-```
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{db}/documents {
-    match /growkit_photos/{id} {
-      allow read: if true;       // dashboard czyta
-      allow write: if false;     // zapisuje tylko relay (service account, omija reguły)
-    }
-  }
-}
-```
-
-## Build produkcyjny / hosting
-
-```bash
-npm run build        # -> dist/
-```
-
-`dist/` wrzuć na Firebase Hosting, Netlify, Vercel albo dowolny statyczny hosting.
-
-## Skąd te dane
-
-Każdy dokument w kolekcji `growkit_photos` ma kształt zdefiniowany w
-[`src/types.ts`](src/types.ts) (`Photo` + `Analysis`) i jest tworzony przez
-`relay/uploader.py`.
+Ten wariant powstał jeszcze przy architekturze chmurowej (Firebase). Przy
+obecnym, **w pełni lokalnym** podejściu rekomendowany jest `photos/report.html`.
+Jeśli chcesz, żeby ten React czytał lokalny folder ze zdjęciami — powiedz,
+dorobię prosty loader `photos/index.json` zamiast Firebase.
