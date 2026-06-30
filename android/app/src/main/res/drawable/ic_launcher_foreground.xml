@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- prosty grzybek -->
+    <path
+        android:fillColor="#FFCCBC"
+        android:pathData="M54,34c-16,0 -28,11 -28,22c0,3 2,5 5,5h46c3,0 5,-2 5,-5C82,45 70,34 54,34z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M48,61h12v14c0,3 -3,6 -6,6s-6,-3 -6,-6z" />
+    <path
+        android:fillColor="#D7CCC8"
+        android:pathData="M44,46m-3,0a3,3 0,1 1,6 0a3,3 0,1 1,-6 0" />
+    <path
+        android:fillColor="#D7CCC8"
+        android:pathData="M62,50m-3,0a3,3 0,1 1,6 0a3,3 0,1 1,-6 0" />
+    <path
+        android:fillColor="#D7CCC8"
+        android:pathData="M54,44m-2,0a2,2 0,1 1,4 0a2,2 0,1 1,-4 0" />
+</vector>

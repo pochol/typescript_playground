@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="20dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="🍄 Mushroom Monitor"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:paddingBottom="16dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Lampa:"
+            android:textStyle="bold" />
+
+        <RadioGroup
+            android:id="@+id/flashGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/flashOn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="Błysk" />
+
+            <RadioButton
+                android:id="@+id/flashTorch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Latarka" />
+
+            <RadioButton
+                android:id="@+id/flashOff"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bez" />
+        </RadioGroup>
+
+        <CheckBox
+            android:id="@+id/maxRes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="Pełna rozdzielczość (108 MP)" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingTop="8dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Interwał (min): " />
+
+            <EditText
+                android:id="@+id/interval"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:text="30"
+                android:autofillHints="" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnShootNow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="📸 Zrób zdjęcie teraz" />
+
+        <Button
+            android:id="@+id/btnStart"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="▶ Start harmonogramu" />
+
+        <Button
+            android:id="@+id/btnStop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="⏹ Stop" />
+
+        <TextView
+            android:id="@+id/status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:padding="12dp"
+            android:background="#11000000"
+            android:text="Inicjalizacja…"
+            android:textIsSelectable="true" />
+
+    </LinearLayout>
+</ScrollView>

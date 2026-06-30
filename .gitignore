@@ -1,0 +1,25 @@
+# Node / dashboard
+node_modules/
+dashboard/dist/
+dashboard/.env.local
+
+# Python / relay
+relay/.venv/
+relay/__pycache__/
+relay/.env
+relay/state.json
+relay/photos/
+relay/firebase-service-account.json
+*.pyc
+
+# Android
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+android/.idea/
+*.iml
+
+# Sekrety / dane
+*.keystore
+.DS_Store
